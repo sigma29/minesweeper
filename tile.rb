@@ -1,6 +1,7 @@
 require 'byebug'
 require 'json'
 require 'yaml'
+require 'colorize'
 
 class Tile
   NEIGHBORS_REL = [
@@ -75,7 +76,7 @@ class Tile
 
   def to_s
     if flagged?
-      "\u2691".encode('utf-8')
+      "\u2691".encode('utf-8').colorize(:red)
     elsif !revealed?
       "*"
     elsif revealed? && is_bomb?
@@ -83,7 +84,24 @@ class Tile
     elsif revealed? && bomb_count == 0
       "_"
     else
-      "#{bomb_count}"
+      case bomb_count
+      when 1
+        "#{bomb_count}".colorize(:light_cyan)
+      when 2
+        "#{bomb_count}".colorize(:green)
+      when 3
+        "#{bomb_count}".colorize(:light_red)
+      when 4
+        "#{bomb_count}".colorize(:blue)
+      when 5
+        "#{bomb_count}".colorize(:red)
+      when 6
+        "#{bomb_count}".colorize(:cyan)
+      when 7
+        "#{bomb_count}".colorize(:black)
+      when 8
+        "#{bomb_count}".colorize(:light_black)
+      end
     end
   end
 
