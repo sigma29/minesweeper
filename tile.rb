@@ -29,6 +29,10 @@ class Tile
     @is_bomb
   end
 
+  def revealed?
+    @revealed
+  end
+
   def neighbors
     neighbors = []
     row, col = pos
@@ -44,6 +48,14 @@ class Tile
 
   def neighbors_bomb_count
     neighbors.count { |neighbor| neighbor.is_bomb? }
+  end
+
+  def reveal
+    self.revealed = true
+
+    if neighbors_bomb_count == 0
+      neighbors.each { |neighbor| neighbor.reveal unless neighbor.revealed? }
+    end
   end
 
   def inspect
