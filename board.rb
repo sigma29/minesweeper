@@ -46,7 +46,7 @@ class Board
   end
 
   def set_mine_pos
-    mine_pos =[]
+    mine_pos = []
 
     until mine_pos.count == num_mines
       row = rand(size)
@@ -55,6 +55,18 @@ class Board
     end
 
     mine_pos
+  end
+
+  def won?
+    grid.each_with_index do |row, row_num|
+      row.each_with_index do |tile, column_num|
+        pos = [row_num,column_num]
+        return false if self[pos].is_bomb? && !self[pos].flagged?
+        return false if self[pos].flagged? && !self[pos].is_bomb?
+      end
+    end
+
+    true
   end
 
 end
