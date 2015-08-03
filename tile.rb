@@ -32,13 +32,17 @@ class Tile
   def neighbors
     neighbors = []
     row, col = pos
-
     NEIGHBORS_REL.each do |delta|
-      next unless delta.all? { |coord| coord.between?(0, board.size - 1) }
       x_diff, y_diff = delta
-      neighbors << board[[row + x_diff, col + y_diff]]
+      new_pos = [row + x_diff, col + y_diff]
+      next unless new_pos.all? { |coord| coord.between?(0, board.size - 1) }
+      neighbors << board[new_pos]
     end
 
     neighbors
+  end
+
+  def inspect
+    "Position:#{pos} is_bomb: #{is_bomb} Flagged: #{flagged} Revealed: #{revealed}"
   end
 end
