@@ -42,8 +42,8 @@ class Board
     mine_pos =[]
 
     until mine_pos.count == num_mines
-      row = rand(0...size)
-      col = rand(0...size)
+      row = rand(size)
+      col = rand(size)
       mine_pos << [row,col] unless mine_pos.include?([row,col])
     end
 
