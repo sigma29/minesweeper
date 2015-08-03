@@ -22,4 +22,26 @@ class Board
     @grid[row][col] = value
   end
 
+  def populate_grid
+
+  end
+
+  def set_mine_pos
+    mine_pos =[]
+
+    until mine_pos.count == num_mines
+      row = rand(0...size)
+      col = rand(0...size)
+      mine_pos << [row,col] unless mine_pos.include?([row,col])
+    end
+
+    mine_pos
+  end
+
+end
+
+if __FILE__ == $PROGRAM_NAME
+  b = Board.new
+  puts "Got here"
+  p b.set_mine_pos
 end
