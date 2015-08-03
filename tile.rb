@@ -75,9 +75,11 @@ class Tile
 
   def to_s
     if flagged?
-      "F"
+      "\u2691".encode('utf-8')
     elsif !revealed?
       "*"
+    elsif revealed? && is_bomb?
+      "\u2620".encode('utf-8')
     elsif revealed? && bomb_count == 0
       "_"
     else
