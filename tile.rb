@@ -42,6 +42,10 @@ class Tile
     neighbors
   end
 
+  def neighbors_bomb_count
+    neighbors.count { |neighbor| neighbor.is_bomb? }
+  end
+
   def inspect
     "Position:#{pos} is_bomb: #{is_bomb} Flagged: #{flagged} Revealed: #{revealed}"
   end
