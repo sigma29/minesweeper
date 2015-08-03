@@ -40,4 +40,5 @@ class Tile
     end
 
     neighbors
+  end
 end
