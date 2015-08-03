@@ -38,6 +38,13 @@ class Board
 
   end
 
+  def render
+    puts "         #{(0...size).to_a.join(' ')}"
+    grid.each_with_index do |row,index|
+      puts "Row #{index.to_s.rjust(2)}:  #{row.join(' ')}"
+    end
+  end
+
   def set_mine_pos
     mine_pos =[]
 
