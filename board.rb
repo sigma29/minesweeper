@@ -23,6 +23,18 @@ class Board
   end
 
   def populate_grid
+    mine_pos = set_mine_pos
+
+    grid.each_with_index do |row, row_number|
+      row.each_with_index do |tile, col_number|
+        pos = [row_number,col_number]
+        if mine_pos.include?(pos)
+          self[pos] = Tile.new(true,pos,self)
+        else
+          self[pos] = Tile.new(false,pos,self)
+        end
+      end
+    end
 
   end
 
@@ -43,5 +55,5 @@ end
 if __FILE__ == $PROGRAM_NAME
   b = Board.new
   puts "Got here"
-  p b.set_mine_pos
+  p b.populate_grid
 end
