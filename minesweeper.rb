@@ -11,6 +11,16 @@ class Minesweeper
     board.populate_grid
   end
 
+  def play
+    board.render
+
+    until board.over?
+      take_turn
+    end
+
+    puts board.won? ? "You are Awesome!!" : "Too bad!"
+  end
+
   def take_turn
     act = action
     pos = position
@@ -65,7 +75,7 @@ class Minesweeper
 end
 
 if __FILE__ == $PROGRAM_NAME
-  game = Minesweeper.new
-  game.take_turn
+  game = Minesweeper.new(4,1)
+  game.play
 
 end
