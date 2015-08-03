@@ -4,7 +4,7 @@ require 'yaml'
 require_relative 'tile'
 
 class Board
-  attr_reader :size, :num_mines, :grid
+  attr_reader :size, :num_mines, :grid, :mine_pos
 
   def initialize(size = 9,num_mines = 10)
     @size = size
@@ -46,7 +46,7 @@ class Board
   end
 
   def set_mine_pos
-    mine_pos = []
+    @mine_pos = []
 
     until mine_pos.count == num_mines
       row = rand(size)
@@ -55,6 +55,14 @@ class Board
     end
 
     mine_pos
+  end
+
+  def over?
+    lost? || won?
+  end
+
+  def lost?
+    mine_pos.any? { |pos| self[pos].revealed? }
   end
 
   def won?
