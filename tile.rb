@@ -56,6 +56,7 @@ class Tile
   end
 
   def reveal
+    return if flagged?
     self.revealed = true
 
     if neighbors_bomb_count == 0
