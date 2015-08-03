@@ -4,11 +4,12 @@ require 'yaml'
 require_relative 'tile'
 
 class Board
-  attr_reader :size, :num_mines, :grid, :mine_pos
+  attr_reader :size, :num_bombs, :grid, :mine_pos
+  attr_writer :lost
 
-  def initialize(size = 9,num_mines = 10)
+  def initialize(size = 9,num_bombs = 10)
     @size = size
-    @num_mines = num_mines
+    @num_bombs = num_bombs
     @grid = Array.new(size) { Array.new(size) }
   end
 
@@ -23,19 +24,19 @@ class Board
   end
 
   def populate_grid
-    mine_pos = set_mine_pos
-
     grid.each_with_index do |row, row_number|
       row.each_with_index do |tile, col_number|
         pos = [row_number,col_number]
-        if mine_pos.include?(pos)
-          self[pos] = Tile.new(true,pos,self)
-        else
           self[pos] = Tile.new(false,pos,self)
-        end
       end
     end
 
+    set_bombs
+    self
+  end
+
+  def on_board?(pos)
+    pos.all? { |coord| coord.between?(0,size) }
   end
 
   def render
@@ -45,33 +46,43 @@ class Board
     end
   end
 
-  def set_mine_pos
-    @mine_pos = []
+  def set_bombs
+    bomb_count = 0
+    tiles = grid.flatten.shuffle
 
-    until mine_pos.count == num_mines
-      row = rand(size)
-      col = rand(size)
-      mine_pos << [row,col] unless mine_pos.include?([row,col])
+    until bomb_count == num_bombs
+      tile = tiles.shift
+      tile.is_bomb = true
+      bomb_count += 1
     end
 
-    mine_pos
+    self
   end
 
-  def over?
-    lost? || won?
+  def reveal(pos)
+    tile = self[pos]
+    
+    tile.reveal
+    self.lost = true if tile.is_bomb? && tile.revealed?
+
+
+
+    if tile.revealed? && tile.neighbors_bomb_count == 0
+      tile.neighbors.each do |neighbor|
+        neighbor.reveal unless neighbor.revealed? || neighbor.flagged?
+      end
+    end
   end
 
   def lost?
-    mine_pos.any? { |pos| self[pos].revealed? }
+    !!@lost
   end
 
+
   def won?
-    grid.each_with_index do |row, row_num|
-      row.each_with_index do |tile, column_num|
-        pos = [row_num,column_num]
-        return false if self[pos].is_bomb? && !self[pos].flagged?
-        return false if self[pos].flagged? && !self[pos].is_bomb?
-      end
+    grid.flatten.each do |tile|
+      return false if tile.is_bomb? && !tile.flagged?
+      return false if tile.flagged? && !tile.is_bomb?
     end
 
     true

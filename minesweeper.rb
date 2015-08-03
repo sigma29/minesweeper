@@ -7,15 +7,15 @@ class Minesweeper
   attr_reader :board
 
   def initialize(size = 9, mine_num = 10)
-    @board = Board.new(size,mine_num)
-    board.populate_grid
+    @board = Board.new(size,mine_num).populate_grid
   end
 
   def play
     board.render
 
-    until board.over?
+    until board.won?
       take_turn
+      break if board.lost?
     end
 
     puts board.won? ? "You are Awesome!!" : "Too bad!"
@@ -29,7 +29,7 @@ class Minesweeper
     when "F"
       board[pos].toggle_flag
     when "R"
-      board[pos].reveal
+      board.reveal(pos)
     end
 
     board.render
@@ -65,7 +65,7 @@ class Minesweeper
   end
 
   def is_valid_pos?(array)
-    array.length == 2 && array.all? { |coord| coord.between?(0,board.size)}
+    array.length == 2  && board.on_board?(array)
   end
 
   def error_message
@@ -75,7 +75,7 @@ class Minesweeper
 end
 
 if __FILE__ == $PROGRAM_NAME
-  game = Minesweeper.new(4,1)
+  game = Minesweeper.new(4,16)
   game.play
 
 end

@@ -8,15 +8,15 @@ class Tile
     [-1, -1],
     [-1,  0],
     [-1,  1],
-    [0,  -1],
-    [0,   1],
-    [1,  -1],
-    [1,   0],
-    [1,   1]
+    [ 0, -1],
+    [ 0,  1],
+    [ 1, -1],
+    [ 1,  0],
+    [ 1,  1]
   ]
 
-  attr_reader :is_bomb, :pos, :board, :bomb_count
-  attr_accessor :flagged, :revealed
+  attr_reader  :pos, :board, :bomb_count
+  attr_accessor :flagged, :revealed, :is_bomb
 
   def initialize(is_bomb, pos, board)
     @is_bomb = is_bomb
@@ -44,7 +44,7 @@ class Tile
     NEIGHBORS_REL.each do |delta|
       x_diff, y_diff = delta
       new_pos = [row + x_diff, col + y_diff]
-      next unless new_pos.all? { |coord| coord.between?(0, board.size - 1) }
+      next unless board.on_board?(new_pos)
       neighbors << board[new_pos]
     end
 
@@ -57,14 +57,10 @@ class Tile
   end
 
   def reveal
-    return if flagged?
+    return if flagged? || revealed?
     self.revealed = true
 
-    if neighbors_bomb_count == 0
-      neighbors.each { |neighbor| neighbor.reveal unless neighbor.revealed? || neighbor.flagged? }
-    end
-
-    nil
+    self
   end
 
   def toggle_flag
