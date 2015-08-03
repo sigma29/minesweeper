@@ -13,4 +13,9 @@ class Tile
     @flagged = false
     @revealed = false
   end
+
+  def is_bomb?
+    @is_bomb
+  end
+  
 end
