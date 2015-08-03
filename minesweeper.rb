@@ -22,8 +22,8 @@ class Minesweeper
   end
 
   def take_turn
-    act = action
-    pos = position
+    act = self.action
+    pos = self.position
 
     case act
     when "F"
