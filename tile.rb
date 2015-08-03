@@ -59,8 +59,13 @@ class Tile
     self.revealed = true
 
     if neighbors_bomb_count == 0
-      neighbors.each { |neighbor| neighbor.reveal unless neighbor.revealed? }
+      neighbors.each { |neighbor| neighbor.reveal unless neighbor.revealed? || neighbor.flagged? }
     end
+  end
+
+  def toggle_flag
+    return if revealed?
+    self.flagged = self.flagged? ? false : true
   end
 
   def to_s
