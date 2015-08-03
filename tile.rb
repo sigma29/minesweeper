@@ -14,7 +14,7 @@ class Tile
     [1,   1]
   ]
 
-  attr_reader :is_bomb, :pos, :board
+  attr_reader :is_bomb, :pos, :board, :bomb_count
   attr_accessor :flagged, :revealed
 
   def initialize(is_bomb, pos, board)
@@ -33,6 +33,10 @@ class Tile
     @revealed
   end
 
+  def flagged?
+    @flagged
+  end
+
   def neighbors
     neighbors = []
     row, col = pos
@@ -47,7 +51,8 @@ class Tile
   end
 
   def neighbors_bomb_count
-    neighbors.count { |neighbor| neighbor.is_bomb? }
+    @bomb_count = neighbors.count { |neighbor| neighbor.is_bomb? }
+    bomb_count
   end
 
   def reveal
@@ -55,6 +60,18 @@ class Tile
 
     if neighbors_bomb_count == 0
       neighbors.each { |neighbor| neighbor.reveal unless neighbor.revealed? }
+    end
+  end
+
+  def to_s
+    if flagged?
+      "F"
+    elsif !revealed?
+      "*"
+    elsif revealed? && bomb_count == 0
+      "_"
+    else
+      "#{bomb_count}"
     end
   end
 
