@@ -7,7 +7,7 @@ class Board
   attr_reader :size, :num_bombs, :grid, :mine_pos
   attr_writer :lost
 
-  def initialize(size = 9,num_bombs = 10)
+  def initialize(size,num_bombs)
     @size = size
     @num_bombs = num_bombs
     @grid = Array.new(size) { Array.new(size) }
@@ -36,7 +36,7 @@ class Board
   end
 
   def on_board?(pos)
-    pos.all? { |coord| coord.between?(0,size) }
+    pos.all? { |coord| coord.between?(0,size - 1) }
   end
 
   def render
@@ -44,6 +44,7 @@ class Board
     grid.each_with_index do |row,index|
       puts "Row #{index.to_s.rjust(2)}:  #{row.join(' ')}"
     end
+    puts "Enter action S to save, X to exit"
   end
 
   def set_bombs
@@ -61,15 +62,13 @@ class Board
 
   def reveal(pos)
     tile = self[pos]
-    
+
     tile.reveal
     self.lost = true if tile.is_bomb? && tile.revealed?
 
-
-
     if tile.revealed? && tile.neighbors_bomb_count == 0
       tile.neighbors.each do |neighbor|
-        neighbor.reveal unless neighbor.revealed? || neighbor.flagged?
+        self.reveal(neighbor.pos) unless neighbor.revealed? || neighbor.flagged?
       end
     end
   end

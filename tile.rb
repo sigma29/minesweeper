@@ -41,14 +41,17 @@ class Tile
   def neighbors
     neighbors = []
     row, col = pos
+
     NEIGHBORS_REL.each do |delta|
       x_diff, y_diff = delta
       new_pos = [row + x_diff, col + y_diff]
       next unless board.on_board?(new_pos)
+
       neighbors << board[new_pos]
     end
-
+    debugger if neighbors.empty?
     neighbors
+
   end
 
   def neighbors_bomb_count
@@ -102,6 +105,6 @@ class Tile
   end
 
   def inspect
-    "Position:#{pos} is_bomb: #{is_bomb} Flagged: #{flagged} Revealed: #{revealed}"
+    "Position:#{pos} is_bomb: #{is_bomb} Flagged: #{flagged} Revealed: #{revealed} Bomb_Count: #{bomb_count.nil?}"
   end
 end
